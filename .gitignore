@@ -1,0 +1,12 @@
+# Libraries and object files
+*.lib
+*.[aod]
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+bin/*
