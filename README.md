@@ -1,22 +1,17 @@
-poweriso
-========
+# disc-image-tools
 
-Cross-platform (*nix, Mac, Win) collection of tools to convert between various disc image formats.
+Collection of cross-platform tools for manipulating various disc image formats.
 
-This project is WIP, do not rely on these tools 100%, always keep the original image file!
-==========================================================================================
-
-
-When finished, each tool should work as follows:<br />
+When finished, each tool should work as follows:  
 `./ext2iso input.ext [output.iso]`
 - Should print out result to stdout if there is no 2nd argument;
 - Should accept stdin if no argumens has been provided (we <3 pipes);
 - Should support multi-threading if possible;
 - Show a progress bar in the cli mode if the output file is specified;
-- _Include an optional GUI if compiled for windows;_
 
-Current progress
-----------------
+
+### Current progress
+
 *2iso tools:
 - [x] b5i2iso
 - [x] bin2iso * (needs either flags or autodetection to set the Mode, use EdcEcc.c)
@@ -46,20 +41,19 @@ iso2* tools:
 
 bonus tools:
 - [_] iso2dir (get rid of xbx2iso and just make this thing extract also xbox/xbox360 images)
-- [_] dir2iso
 
 maybe:
+- [_] dir2iso
 - [_] cdi2nrg
 - [_] cdi2bin
 
->[_] - no code yet<br />
->[~] - got the code, yet it's not working/incomplete<br />
->[X] - complete item<br />
+>[_] - no code yet  
+>[~] - got the code, yet it's not working/incomplete  
+>[X] - complete item  
 > *  - generates/requires a 'cue sheet' file with the same basename (thus cannot be used with pipes)
 
 
-Quick format reference:
-----------------------
+### Quick format reference:
 
 - .b5i|.b6i is a Blindwrite image file.
 - ^- .b5t|.b6t 
@@ -93,8 +87,8 @@ Quick format reference:
 - .vdi
 - .xbx is an Xbox ISO image file
 
-List of tools used as a base for this project:
----------------------------------------------
+
+### List of tools used as a base for this project:
 
 `cdi2iso`
 >cdi2iso is a very simple utility to convert DiscJuggler image to the standard ISO-9660 format.
@@ -131,4 +125,3 @@ original code author is Tonto Rostenfaunt (http://sourceforge.net/projects/xbiso
 
 `iso2bin`
 >original code author is loser; EdcEcc is based on 'check' by crusador / kalisto
-
