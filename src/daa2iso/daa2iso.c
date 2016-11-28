@@ -32,19 +32,19 @@
 #include "LzmaDec.h"    // http://www.7-zip.org
 #include "tinf.h"       // http://www.ibsensoftware.com
 
-#ifdef __DJGPP__    // thanx to Robert Riebisch http://www.bttr-software.de
-    #define NOLFS
-    char **__crt0_glob_function (char *arg) { return 0; }
-    void   __crt0_load_environment_file (char *progname) { }
+#ifdef __DJGPP__        // thanx to Robert Riebisch http://www.bttr-software.de
+#define NOLFS
+char **__crt0_glob_function (char *arg) { return 0; }
+void   __crt0_load_environment_file (char *progname) { }
 #endif
 
 #ifdef WIN32
-    #include <windows.h>
-    HWND    mywnd;
-    char *get_file(void);
-    char *put_file(char *suggested);
+#include <windows.h>
+HWND    mywnd;
+char *get_file(void);
+char *put_file(char *suggested);
 #else
-    #define stricmp strcasecmp
+#define stricmp strcasecmp
 #endif
 
 typedef uint8_t     u8;
@@ -52,11 +52,7 @@ typedef uint16_t    u16;
 typedef uint32_t    u32;
 typedef uint64_t    u64;
 
-
-
 #include "daa_crypt.h"
-
-
 
 #define VER         "0.1.7e"
 
@@ -73,8 +69,6 @@ typedef uint64_t    u64;
         #define ftell   ftello64
     #endif
 #endif
-
-
 
 #pragma pack(4)
 typedef struct {
@@ -105,8 +99,6 @@ enum {
     TYPE_NONE
 };
 
-
-
 unsigned int daa2iso_read_bits(unsigned int bits, unsigned char *in, unsigned int in_bits, unsigned int lame, int lame_increase);
 void gburner_lame(u8 *data, int size, u8 crc8);
 void poweriso_lame(u8 *data, int size, u64 isosize);
@@ -132,14 +124,12 @@ static void SzFree(void *p, void *address) { free(address); }
 static ISzAlloc g_Alloc = { SzAlloc, SzFree };
 
 
-
 int     multi   = 0,
         multinum,
         endian,
         daagbi  = TYPE_DAA,
         swapped_btype[3] = { 0, 1, 2 };
 char    *multi_filename;
-
 
 
 int main(int argc, char *argv[]) {
@@ -723,122 +713,143 @@ char *put_file(char *suggested) {
 #endif
 
 
-
 u8 *find_ext(u8 *fname, u8 *ext) {
-    int     len,
-            extlen;
-    u8      *ret;
+    int len, extlen;
+    u8  *ret;
 
     len    = strlen(fname);
     extlen = strlen(ext);
     ret    = fname + len - extlen;
-    if((len >= extlen) && !stricmp(ret, ext)) {
-        return(ret);
+
+    if ((len >= extlen) && !stricmp(ret, ext)) {
+        return ret;
     }
-    return(NULL);
+
+    return NULL;
 }
 
 
+FILE *daa_next(void)
+{
+    daa_t daa;
+    FILE  *fd;
+    static char *toadd = NULL, *fmt;
 
-FILE *daa_next(void) {
-    daa_t   daa;
-    FILE    *fd;
-    static char
-            *toadd = NULL,
-            *fmt;
-
-    if(!toadd) {
+    if (!toadd) {
         toadd = multi_filename + strlen(multi_filename);
-        switch(multi) {
-            case 1:  fmt = "%03d.daa";  break;
-            case 2:  fmt = "%02d.daa";  break;
-            default: fmt = ".d%02d";    break;
+
+        switch (multi)
+        {
+            case 1:
+                fmt = "%03d.daa";
+            break;
+
+            case 2:
+                fmt = "%02d.daa";
+            break;
+
+            default:
+                fmt = ".d%02d";
+            break;
         }
     }
 
     sprintf(toadd, fmt, multinum);
     printf("  open %s\n", multi_filename);
     fd = fopen(multi_filename, "rb");
-    if(!fd) std_err();
+
+    if (!fd) std_err();
 
     myfr(fd, &daa, sizeof(daa));
     l2n_daa(&daa);
-    if(strncmp(daa.sign, "DAA VOL", 16) && strncmp(daa.sign, "GBI VOL", 16)) {
+
+    if (strncmp(daa.sign, "DAA VOL", 16) && strncmp(daa.sign, "GBI VOL", 16)) {
         printf("\nError: wrong DAA VOL signature (%.16s)\n", daa.sign);
         myexit(NULL);
     }
-    if(fseek(fd, daa.size_offset, SEEK_SET)) std_err();
+
+    if (fseek(fd, daa.size_offset, SEEK_SET)) std_err();
 
     multinum++;
-    return(fd);
+    return fd;
 }
 
 
+void myalloc(u8 **data, unsigned wantsize, unsigned *currsize)
+{
+    if (wantsize <= *currsize) return;
 
-void myalloc(u8 **data, unsigned wantsize, unsigned *currsize) {
-    if(wantsize <= *currsize) return;
     *data = realloc(*data, wantsize);
-    if(!*data) std_err();
+
+    if (!*data) std_err();
+
     *currsize = wantsize;
 }
 
 
+void myfr(FILE *fd, void *data, unsigned size)
+{
+    int len = fread(data, 1, size, fd);
 
-void myfr(FILE *fd, void *data, unsigned size) {
-    int     len;
+    if (len == size) return;
 
-    len = fread(data, 1, size, fd);
-    if(len == size) return;
-    if(!multi) {
+    if (!multi) {
         printf("\nError: incomplete input file, can't read %u bytes\n", size);
         myexit(NULL);
     }
+
     fclose(fd);
     fd = daa_next();
     myfr(fd, data + len, size - len);
 }
 
 
+void myfw(FILE *fd, void *data, unsigned size)
+{
+    if (fwrite(data, 1, size, fd) == size) return;
 
-void myfw(FILE *fd, void *data, unsigned size) {
-    if(fwrite(data, 1, size, fd) == size) return;
     printf("\nError: problems during the writing of the output file, check your disk space\n");
+
     myexit(fd);
 }
 
 
-
-int unlzma(CLzmaDec *lzma, u8 *in, u32 insz, u8 *out, u32 outsz) {
+int unlzma(CLzmaDec *lzma, u8 *in, u32 insz, u8 *out, u32 outsz)
+{
     ELzmaStatus status;
-    SizeT   inlen,
-            outlen;
+    SizeT inlen, outlen;
 
     LzmaDec_Init(lzma);
 
     inlen  = insz;
     outlen = outsz;
-    if(LzmaDec_DecodeToBuf(lzma, out, &outlen, in, &inlen, LZMA_FINISH_END, &status) != SZ_OK) {
+
+    if (LzmaDec_DecodeToBuf(lzma, out, &outlen, in, &inlen, LZMA_FINISH_END, &status) != SZ_OK) {
         printf("\nError: the compressed LZMA input is wrong or incomplete (%d)\n", status);
         myexit(NULL);
     }
-    return(outlen);
+
+    return outlen;
 }
 
 
-
-int unzip(u8 *in, u32 insz, u8 *out, u32 outsz) {
+int unzip(u8 *in, u32 insz, u8 *out, u32 outsz)
+{
     tinf_init();
-    if(tinf_uncompress(out, &outsz, in, insz, swapped_btype) != TINF_OK) {
+
+    if (tinf_uncompress(out, &outsz, in, insz, swapped_btype) != TINF_OK) {
         printf("\nError: the compressed INFLATE input is wrong or incomplete\n");
         myexit(NULL);
     }
-    return(outsz);
+
+    return outsz;
 }
 
 
+void l2n_daa(daa_t *daa)
+{
+    if (!endian) return;
 
-void l2n_daa(daa_t *daa) {
-    if(!endian) return;
     l2n_32(&daa->size_offset);
     l2n_32(&daa->version);
     l2n_32(&daa->data_offset);
@@ -851,25 +862,25 @@ void l2n_daa(daa_t *daa) {
 }
 
 
+void l2n_16(u16 *num)
+{
+    u16 tmp;
 
-void l2n_16(u16 *num) {
-    u16     tmp;
+    if (!endian) return;
 
-    if(!endian) return;
-
-    tmp = *num;
+    tmp  = *num;
     *num = ((tmp & 0xff00) >> 8) |
            ((tmp & 0x00ff) << 8);
 }
 
 
+void l2n_32(u32 *num)
+{
+    u32 tmp;
 
-void l2n_32(u32 *num) {
-    u32     tmp;
+    if (!endian) return;
 
-    if(!endian) return;
-
-    tmp = *num;
+    tmp  = *num;
     *num = ((tmp & 0xff000000) >> 24) |
            ((tmp & 0x00ff0000) >>  8) |
            ((tmp & 0x0000ff00) <<  8) |
@@ -877,13 +888,13 @@ void l2n_32(u32 *num) {
 }
 
 
+void l2n_64(u64 *num)
+{
+    u64 tmp;
 
-void l2n_64(u64 *num) {
-    u64     tmp;
+    if (!endian) return;
 
-    if(!endian) return;
-
-    tmp = *num;
+    tmp  = *num;
     *num = (u64)((u64)(tmp & (u64)0xff00000000000000ULL) >> (u64)56) |
            (u64)((u64)(tmp & (u64)0x00ff000000000000ULL) >> (u64)40) |
            (u64)((u64)(tmp & (u64)0x0000ff0000000000ULL) >> (u64)24) |
@@ -895,8 +906,9 @@ void l2n_64(u64 *num) {
 }
 
 
-u32 crc32(u8 *data, int size) {
-    static const u32    crctable[] = {
+u32 crc32(u8 *data, int size)
+{
+    static const u32 crctable[] = {
         0x00000000, 0x77073096, 0xee0e612c, 0x990951ba,
         0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3,
         0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988,
@@ -960,46 +972,53 @@ u32 crc32(u8 *data, int size) {
         0xbdbdf21c, 0xcabac28a, 0x53b39330, 0x24b4a3a6,
         0xbad03605, 0xcdd70693, 0x54de5729, 0x23d967bf,
         0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94,
-        0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d };
-    u32     crc = 0xffffffff;
-    u8      *limit;
+        0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
+    };
 
-    for(limit = data + size; data < limit; data++) {
+    u32 crc = 0xffffffff;
+    u8  *limit;
+
+    for (limit = data + size; data < limit; data++) {
         crc = crctable[*data ^ (crc & 0xff)] ^ (crc >> 8);
     }
-    return(~crc);
+
+    return ~crc;
 }
 
 
-
-void std_err(void) {
+void std_err(void)
+{
     perror("\nError");
     myexit(NULL);
 }
 
 
-
-int fgetz(u8 *data, int size, FILE *fd) {
-    u8      *p;
+int fgetz(u8 *data, int size, FILE *fd)
+{
+    u8 *p;
 
     fflush(fd);
-    if(!fgets(data, size, fd)) {
+
+    if (!fgets(data, size, fd)) {
         data[0] = 0;
-        return(0);
+        return 0;
     }
-    for(p = data; *p && (*p != '\n') && (*p != '\r'); p++);
+
+    for (p = data; *p && (*p != '\n') && (*p != '\r'); p++);
+
     *p = 0;
-    return(p - data);
+
+    return p - data;
 }
 
 
-
-void myexit(FILE *fdo) {
-    if(fdo) fclose(fdo);    // a bit useless
+void myexit(FILE *fdo)
+{
+    if (fdo) fclose(fdo);    // a bit useless
 #ifdef WIN32
     u8      ans[8];
 
-    if(GetWindowLong(mywnd, GWL_WNDPROC)) {
+    if (GetWindowLong(mywnd, GWL_WNDPROC)) {
         printf("\nPress RETURN to quit");
         fgetz(ans, sizeof(ans), stdin);
     }

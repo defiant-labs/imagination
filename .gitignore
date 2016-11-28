@@ -1,12 +1,15 @@
-# Libraries and object files
-*.lib
-*.[aod]
+# OS-specific dotfiles
+.DS_Store
+.directory
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
+# Object files
+*.o
 
 # Executables
-bin/*
+bin/cdi2iso
+bin/pdi2iso
+bin/mdf2iso
+bin/b5i2iso
+bin/nrg2iso
+bin/bin2iso
+bin/iso2dir
