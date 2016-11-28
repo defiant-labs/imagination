@@ -48,6 +48,11 @@ original code author is Tonto Rostenfaunt (http://sourceforge.net/projects/xbiso
 `iso2bin`
 >original code author is loser; EdcEcc is based on 'check' by crusador / kalisto
 
+`uif2iso`
+>A command-line tool for converting single and multipart UIF images to
+the ISO format. See file [uif2iso.txt](docs/uif2iso.txt) for more documentation.
+original code author is Luigi Auriemma <aluigi@autistici.org> (http://aluigi.org/mytoolz.htm#uif2iso)
+
 
 ### License
 
