@@ -1,13 +1,13 @@
-# disc-image-tools
+# imagination
 
-Collection of cross-platform tools for manipulating various disc image formats.
+Collection of tools for manipulating various disc image formats.
 
-When finished, each tool should work as follows:  
+Once the project is finished, each tool should work as follows:  
 `./ext2iso input.ext [output.iso]`
-- Should print out result to stdout if there is no 2nd argument;
-- Should accept stdin if no argumens has been provided (we <3 pipes);
-- Should support multi-threading if possible;
-- Show a progress bar in the cli mode if the output file is specified;
+- Should print out result to stdout if there is no 2nd argument
+- Should accept stdin in case no argumens was provided
+- Should eventually support multi-threading
+- Show a progress bar with percentage in the cli mode if the output file is specified
 
 
 ### Current progress
@@ -47,6 +47,7 @@ maybe:
 - [_] cdi2nrg
 - [_] cdi2bin
 
+legend:
 >[_] - no code yet  
 >[~] - got the code, yet it's not working/incomplete  
 >[X] - complete item  
@@ -125,3 +126,8 @@ original code author is Tonto Rostenfaunt (http://sourceforge.net/projects/xbiso
 
 `iso2bin`
 >original code author is loser; EdcEcc is based on 'check' by crusador / kalisto
+
+
+### License
+
+GPL 2.0

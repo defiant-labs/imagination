@@ -14,11 +14,11 @@
 
 /* calling convention */
 #ifndef TINFCC
- #ifdef __WATCOMC__
-  #define TINFCC __cdecl
- #else
-  #define TINFCC
- #endif
+#ifdef __WATCOMC__
+#define TINFCC __cdecl
+#else
+#define TINFCC
+#endif
 #endif
 
 #ifdef __cplusplus
