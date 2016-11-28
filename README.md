@@ -10,41 +10,6 @@ Once the project is finished, each tool should work as follows:
 - Show a progress bar with percentage in the cli mode if the output file is specified
 
 
-### Quick format reference:
-
-- .b5i|.b6i is a Blindwrite image file.
-- ^- .b5t|.b6t 
-- .bin|.raw is a standard Windows format image file (or XCDRoast or Cdrdao?)
-- ^- .cue is a CDRwin cue sheet for a .bin|.raw image
-- ^- .toc is a Cdrdao's cue sheet for a .bin|.raw image
-- .bwi
-- .bwt
-- .c2d is am Easy Media Creator/WinOnCD CD image File
-- .cdi is a DiscJuggler image file. Comes in versions 2.0 and 3.0! (2336/2352)
-- .cif is an Easy CD Creator disc image format
-- .crf
-- .cso is a Compressed ISO disc image format
-- .daa|.gba (Direct Access Archive) is a proprietary file format associated with PowerISO for Windows.
-   DAA image files are zlib- or lzma-compressed ISO images chunk-by-chunk
-- .ecm is an Error Code Modeller container format
-- .fcd
-- .gcm is a Gamecube ISO format
-- .gbi is a gBurner image format
-- .img|.ccd is a CloneCD image file
-- ^- .ccd|.sub is a CloneCD 'cue sheet' for .img
-- .isz - UltraISO image file
-- .lcd
-- .mdf is an Alcohol 120% image file
-- ^- .mds is an Alcohol 120% 'cue sheet' for .mdf
--    ^- .mdx is a combination of .mdf and .mds
-- .nrg is a Nero Burning Rom image file
-- .pdi is an InstantCOPY image file
-- .uif is a MagicIso proprietary compressed disc image file format
-- .vcd
-- .vdi
-- .xbx is an Xbox ISO image file
-
-
 ### List of tools used as a base for this project:
 
 `cdi2iso`
