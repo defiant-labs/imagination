@@ -41,7 +41,6 @@ const char *platform = "linux";
 
 #include <stdio.h>
 #include <stdlib.h>
-//#include <malloc.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -60,7 +59,6 @@ const char *platform = "linux";
 //endian macros
 #define btoll(dtbuf) (dtbuf[3]<<24) | (dtbuf[2]<<16) | (dtbuf[1]<<8) | dtbuf[0];
 #define btols(dtbuf) (dtbuf[1]<<8) | dtbuf[0];
-//#include "config.h"
 
 const char *version = "0.6.1";
 unsigned char dtbuf[4];
@@ -354,7 +352,7 @@ handlefile(OFFT offset, int dtable)
 
     //xiso compat
     if (xisocompat) {
-        if (dirent.rtable != 0) {
+        if (dirent.rtable) {
             int cpos = xbftell(xiso);
 
             fread(buffer, 32, 1, xiso);
@@ -374,8 +372,8 @@ handlefile(OFFT offset, int dtable)
     //end xiso compat
 
     //check for dirs with no files
-    if (dirent.fnamelen != 0) {
-        if ((dirent.attribs & FILE_DIR) != 0) {
+    if (dirent.fnamelen) {
+        if ((dirent.attribs & FILE_DIR)) {
             procdir(&dirent);
 
             handlefile((OFFT)dirent.sector * 2048, dirent.sector);
@@ -391,9 +389,9 @@ handlefile(OFFT offset, int dtable)
         }
         free(dirent.fname);
 
-        if (dirent.rtable != 0)
+        if (dirent.rtable)
             handlefile((OFFT)dtable * 2048 + (dirent.rtable * 4), dtable);
-        if (dirent.ltable != 0)
+        if (dirent.ltable)
             handlefile((OFFT)dtable * 2048 + (dirent.ltable * 4), dtable);
     }
 }
@@ -428,7 +426,7 @@ void procdir(TABLE *dirent)
         CreateDirectory(dirent->fname, NULL);
         SetCurrentDirectory(dirent->fname);
 #else
-        if ( mkdir(dirent->fname, 0755) )
+        if (mkdir(dirent->fname, 0755))
             err("Failed to create directory.\n");
         chdir(dirent->fname);
 #endif

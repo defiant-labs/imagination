@@ -30,61 +30,10 @@
 #define _FILE_OFFSET_BITS 64
 
 
-const char SYNC_HEADER[12] = {
-    (char) 0x00,
-    (char) 0xFF,
-    (char) 0xFF,
-    (char) 0xFF,
-    (char) 0xFF,
-    (char) 0xFF,
-    (char) 0xFF,
-    (char) 0xFF,
-    (char) 0xFF,
-    (char) 0xFF,
-    (char) 0xFF,
-    (char) 0x00
-};
-
-const char SYNC_HEADER_MDF_AUDIO[12] = {
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0xC0,
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0x80
-};
-
-const char SYNC_HEADER_MDF[12] = {
-    (char) 0x80,
-    (char) 0xC0,
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0xC0,
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0x80,
-    (char) 0x80
-};
-
-const char ISO_9660[8] = {
-    (char) 0x01,
-    (char) 0x43,
-    (char) 0x44,
-    (char) 0x30,
-    (char) 0x30,
-    (char) 0x31,
-    (char) 0x01,
-    (char) 0x00
-};
+const char SYNC_HEADER[12]           = { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
+const char SYNC_HEADER_MDF_AUDIO[12] = { 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0xC0, 0x80, 0x80, 0x80, 0x80 };
+const char SYNC_HEADER_MDF[12]       = { 0x80, 0xC0, 0x80, 0x80, 0x80, 0x80, 0x80, 0xC0, 0x80, 0x80, 0x80, 0x80 };
+const char ISO_9660[8]               = { 0x01, 0x43, 0x44, 0x30, 0x30, 0x31, 0x01, 0x00 };
 
 
 void toc_file (char *destfilename, int sub)
@@ -118,6 +67,7 @@ void toc_file (char *destfilename, int sub)
     }
 }
 
+
 int number_file (char *destfilename)
 {
     int i = 1, test_mdf = 0;
@@ -146,6 +96,7 @@ int number_file (char *destfilename)
     return n_mdf;
 }
 
+
 void cuesheets (char *destfilename)
 {
     char destfilecue[1024], destfilebin[1024];
@@ -169,6 +120,7 @@ void cuesheets (char *destfilename)
     fclose(fcue);
 }
 
+
 void main_percent(int percent_bar)
 {
     int progress_bar, progress_space;
@@ -186,6 +138,7 @@ void main_percent(int percent_bar)
     printf(":]\r");
 }
 
+
 void usage ()
 {
     printf("mdf2iso v%s by Salvatore Santagati\n", VERSION);
@@ -202,8 +155,8 @@ void usage ()
     printf("\t--help   display this notice\n\n");
 }
 
-int
-main (int argc, char **argv)
+
+int main (int argc, char **argv)
 {
     int seek_ecc, sector_size, seek_head, sector_data, n_mdf;
     int cue = 0, cue_mode = 0, sub = 1, toc = 0, sub_toc = 0;
@@ -249,13 +202,16 @@ main (int argc, char **argv)
             strcpy(destfilename, argv[2 + opts]);
         else {
             strcpy(destfilename, argv[1 + opts]);
+
             if (strlen(argv[1 + cue]) < 5 || strcmp(destfilename + strlen(argv[1 + opts]) - 4, ".mdf"))
                 strcpy(destfilename + strlen(argv[1 + opts]), ".iso");
             else
                 strcpy(destfilename + strlen(argv[1 + opts]) - 4, ".iso");
         }
 
-        if ((fsource = fopen(argv[1 + opts], "rb")) != NULL) {
+        fsource = fopen(argv[1 + opts], "rb");
+
+        if (fsource) {
             fseek(fsource, 32768, SEEK_CUR);
             fread(buf, sizeof(char), 8, fsource);
 
@@ -263,12 +219,12 @@ main (int argc, char **argv)
                 fseek(fsource, 0L, SEEK_SET);
                 fread(buf, sizeof(char), 12, fsource);
 
-                if (!memcmp (SYNC_HEADER, buf, 12)) {
+                if (!memcmp(SYNC_HEADER, buf, 12)) {
                     fseek(fsource, 0L, SEEK_SET);
                     fseek(fsource, 2352, SEEK_CUR);
                     fread(buf, sizeof(char), 12, fsource);
 
-                    if (!memcmp (SYNC_HEADER_MDF, buf, 12)) {
+                    if (!memcmp(SYNC_HEADER_MDF, buf, 12)) {
                         if (cue == 1) {
                             cue_mode = 1;
                             /* BAD SECTOR TO NORMAL IMAGE */
@@ -336,8 +292,9 @@ main (int argc, char **argv)
                     }
                 }
 
-                if ((fdest = fopen(destfilename, "wb")) != NULL) {
-                } else {
+                fdest = fopen(destfilename, "wb");
+
+                if (!fdest) {
                     printf("%s\n", strerror(errno));
                     exit(EXIT_FAILURE);
                 }
@@ -351,14 +308,12 @@ main (int argc, char **argv)
                 for (i = 0; i < source_length; i++) {
                     fseek(fsource, seek_head, SEEK_CUR);
 
-                    if (fread(buf, sizeof(char), sector_data, fsource)) {
-                    } else {
+                    if (!fread(buf, sizeof(char), sector_data, fsource)) {
                         printf("%s\n", strerror(errno));
                         exit(EXIT_FAILURE);
                     }
 
-                    if (fwrite(buf, sizeof(char), sector_data, fdest)) {
-                    } else {
+                    if (!fwrite(buf, sizeof(char), sector_data, fdest)) {
                         printf("%s\n", strerror(errno));
                         exit(EXIT_FAILURE);
                     }
@@ -366,7 +321,7 @@ main (int argc, char **argv)
                     fseek(fsource, seek_ecc, SEEK_CUR);
                     write_iso = (int)(sector_data * i);
 
-                    if (i != 0)
+                    if (i)
                         percent = (int)(write_iso * 100 / size_iso);
 
                     main_percent(percent);
@@ -379,16 +334,17 @@ main (int argc, char **argv)
 
                 if (cue == 1)
                     cuesheets(destfilename);
+
                 if (toc == 1)
                     toc_file(destfilename, sub_toc);
+
                 if ((toc == 0) && (cue == 0))
                     printf("Create iso9660: %s\n", destfilename);
 
                 exit(EXIT_SUCCESS);
-            }
-
-            else
+            } else {
                 printf("This is file iso9660 ;)\n");
+            }
 
             n_mdf = number_file(destfilename) - 1;
 

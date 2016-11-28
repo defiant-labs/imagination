@@ -12,9 +12,9 @@
 //      MODE2_FORM2
 //
 
-#include "EdcEcc.h"
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
+#include "EdcEcc.h"
 
 #define GF8_PRIM_POLY       0x11d           // x^8 + x^4 + x^3 + x^2 + 1
 

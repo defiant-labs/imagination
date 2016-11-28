@@ -10,7 +10,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <types.h>
 #include "EdcEcc.h"
 
 
@@ -21,8 +20,8 @@
 #define SUB_HEADER_SIZE     8
 
 
-const u8 syncData[SYNC_SIZE] = { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
-const u8 subHeader[SUB_HEADER_SIZE] = { 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x08, 0x00 };
+const char syncData[SYNC_SIZE]        = { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
+const char subHeader[SUB_HEADER_SIZE] = { 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x08, 0x00 };
 
 const char title[] = "iso2bin beta 0.1 - loser 2005";
 const char usage[] = "usage:  iso2bin <input iso file> <output bin file>";
@@ -31,7 +30,7 @@ void setSector(u8* sectorBuffer, s32 sectorNum);
 void testit();
 
 
-int main(int argc, const char* argv[])
+int main(const int argc, const char **argv)
 {
     // check args
     printf("%s\n", title);
@@ -72,13 +71,13 @@ int main(int argc, const char* argv[])
     for (s32 sectorNum = 0; sectorNum<sectorMax; sectorNum++) {
         // convert 1 sector from iso to bin
         setSector(sectorBuffer, sectorNum);
-        if (fread(§orBuffer[24], ISO_SECTOR_SIZE, 1, iso_fd) != 1)
+        if (fread(sectorBuffer[24], ISO_SECTOR_SIZE, 1, iso_fd) != 1)
             printf("error reading sector %d\n", sectorNum);
 
         if (!edcecc.fixSector(sectorBuffer, MODE2_FORM1))
             printf("error adding edc/ecc data for sector %d\n", sectorNum);
 
-        if (fwrite(§orBuffer[0], BIN_SECTOR_SIZE, 1, bin_fd) != 1)
+        if (fwrite(sectorBuffer[0], BIN_SECTOR_SIZE, 1, bin_fd) != 1)
             printf("error writing sector %d\n", sectorNum);
     }
 
@@ -90,17 +89,19 @@ int main(int argc, const char* argv[])
     return 0;
 }
 
+
 u8 int2bcd(u8 i)
 {
     return (((i/10) << 4) & 0xF0) | ((i%10) & 0x0F);
 }
 
+
 void setSector(u8* sectorBuffer, s32 sectorNum)
 {
-    memcpy(§orBuffer[0], syncData, SYNC_SIZE);
+    memcpy(sectorBuffer[0], syncData, SYNC_SIZE);
     sectorBuffer[12] = int2bcd(sectorNum / (75 * 60)); // minutes
     sectorBuffer[13] = int2bcd(sectorNum / 75);        // seconds
     sectorBuffer[14] = int2bcd(sectorNum % 75);        // frames
     sectorBuffer[15] = 0x02;                           // mode2
-    memcpy(§orBuffer[16], subHeader, SUB_HEADER_SIZE);
+    memcpy(sectorBuffer[16], subHeader, SUB_HEADER_SIZE);
 }

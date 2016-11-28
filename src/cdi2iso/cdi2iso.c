@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 {
     int  seek_ecc, sector_size, bw = 1, seek_header;
     long i, source_length;
-    char buf[2448], destfilename[2354];
+    char buf[2448], destfilename[9000];
     FILE *fdest, *fsource;
 
     if (argc < 2) {

@@ -15,8 +15,6 @@
 #ifndef _EDC_ECC_H_
 #define _EDC_ECC_H_
 
-#include <types.h>
-
 // sector mode/form types 
 enum SectorModeType {
     MODE1 = 0,        // mode1 sector

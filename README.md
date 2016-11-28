@@ -10,50 +10,6 @@ Once the project is finished, each tool should work as follows:
 - Show a progress bar with percentage in the cli mode if the output file is specified
 
 
-### Current progress
-
-*2iso tools:
-- [x] b5i2iso
-- [x] bin2iso * (needs either flags or autodetection to set the Mode, use EdcEcc.c)
-- [_] c2d2iso
-- [x] cdi2iso
-- [~] daa2iso   (Types.h, tinf.h, tinflate.c, LzmaDec.h, LzmaDec.c)
-- [_] img2iso * (make sure it reads the .ccd file)
-- [_] isz2iso   (use the python script as a spec)
-- [~] mdf2iso * (make sure it reads the .mds file; implement .mdx support)
-- [x] nrg2iso   (see the TODO notes in the source)
-- [~] pdi2iso   (add RAW16 and RAW96, improve the progress bar)
-- [_] uif2iso
-- [~] xbx2iso   (merge with iso2dir, since xbx is just a variation of iso)
-
-iso2* tools:
-- [_] iso2b5i
-- [X] iso2bin * (EdcEcc.h, EdcEcc.c)
-- [_] iso2c2d
-- [_] iso2cdi
-- [_] iso2daa
-- [_] iso2img *
-- [_] iso2isz
-- [_] iso2mdf *
-- [_] iso2nrg
-- [_] iso2pdi
-- [_] iso2uif
-
-bonus tools:
-- [_] iso2dir (get rid of xbx2iso and just make this thing extract also xbox/xbox360 images)
-
-maybe:
-- [_] dir2iso
-- [_] cdi2nrg
-- [_] cdi2bin
-
-legend:
->[_] - no code yet  
->[~] - got the code, yet it's not working/incomplete  
->[X] - complete item  
-> *  - generates/requires a 'cue sheet' file with the same basename (thus cannot be used with pipes)
-
-
 ### Quick format reference:
 
 - .b5i|.b6i is a Blindwrite image file.
@@ -71,7 +27,7 @@ legend:
 - .daa|.gba (Direct Access Archive) is a proprietary file format associated with PowerISO for Windows.
    DAA image files are zlib- or lzma-compressed ISO images chunk-by-chunk
 - .ecm is an Error Code Modeller container format
-- .fcd 
+- .fcd
 - .gcm is a Gamecube ISO format
 - .gbi is a gBurner image format
 - .img|.ccd is a CloneCD image file

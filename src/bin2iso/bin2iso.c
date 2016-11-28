@@ -26,24 +26,24 @@
 #define VERSION 0.4
 
 
-const char SYNC_HEADER[12] = { 0, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0 };
+const char SYNC_HEADER[12] = { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
 
 
-int main(int argc, char **argv)
+int main(const int argc, const char **argv)
 {
     int  seek_header, seek_ecc, sector_size;
     long i, source_length;
-    char buf[2352], destfilename[2354];
+    char buf[2352], destfilename[9000];
     FILE *fdest, *fsource;
 
     if (argc < 2) {
-        printf("Error: bad syntax\n\nUsage is: bin2iso image.bin [image.iso]\n");
+        fprintf(stderr, "Error: bad syntax\n\nUsage is: bin2iso image.bin [image.iso]\n");
         exit(EXIT_FAILURE);
-    }
-    else if (argc > 2)
+    } else if (argc > 2) {
         strcpy(destfilename, argv[2]);
-    else {
+    } else {
         strcpy(destfilename, argv[1]);
+
         if (strlen(argv[1]) < 5 || strcmp(destfilename + strlen(argv[1]) - 4, ".bin"))
             strcpy(destfilename + strlen(argv[1]), ".iso");
         else
@@ -74,7 +74,9 @@ int main(int argc, char **argv)
             break;
 
             default:
-                printf("Error: Unsupported track mode");
+                fprintf(stderr, "Error: Unsupported track mode\n");
+                fclose(fdest);
+                fclose(fsource);
                 exit(EXIT_FAILURE);
             break;
         }
