@@ -6,10 +6,4 @@
 *.o
 
 # Executables
-bin/cdi2iso
-bin/pdi2iso
-bin/mdf2iso
-bin/b5i2iso
-bin/nrg2iso
-bin/bin2iso
-bin/iso2dir
+bin
