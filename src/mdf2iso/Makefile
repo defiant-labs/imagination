@@ -1,7 +1,7 @@
 BINDIR ?= bin/
 SRCDIR ?= ../
 
-mdf2iso:
+$(BINDIR)mdf2iso:
 	@mkdir -p $(BINDIR)
 	gcc $(SRCDIR)mdf2iso/mdf2iso.c -o $(BINDIR)mdf2iso
 
@@ -13,6 +13,6 @@ clean:
 	rm -f $(BINDIR)mdf2iso
 	@rmdir $(BINDIR)
 
-.PHONY: all clean
+.PHONY: clean
 
 endif

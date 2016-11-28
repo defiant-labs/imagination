@@ -1,7 +1,7 @@
 BINDIR ?= bin/
 SRCDIR ?= ../
 
-iso2dir:
+$(BINDIR)iso2dir:
 	@mkdir -p $(BINDIR)
 	gcc $(SRCDIR)iso2dir/iso2dir.c -lm -o $(BINDIR)iso2dir
 
@@ -13,6 +13,6 @@ clean:
 	rm -f $(BINDIR)iso2dir
 	@rmdir $(BINDIR)
 
-.PHONY: all clean
+.PHONY: clean
 
 endif
