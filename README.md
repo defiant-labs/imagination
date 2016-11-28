@@ -4,8 +4,8 @@ Collection of tools for manipulating various disc image formats.
 
 Once the project is finished, each tool should work as follows:  
 `./ext2iso input.ext [output.iso]`
-- Should print out result to stdout if there is no 2nd argument
-- Should accept stdin in case no argumens was provided
+- Should print the result to stdout if no second argument specified
+- Should accept stdin in case no argumens were provided
 - Should eventually support multi-threading
 - Show a progress bar with percentage in the cli mode if the output file is specified
 
